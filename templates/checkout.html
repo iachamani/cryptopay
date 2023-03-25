@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html><head>
+	<title>Checkout</title>
+</head>
+<body>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+<!------ Include the above in your HEAD tag ---------->
+<div class="col-md-6 offset-md-3">
+				<span class="anchor" id="formPayment"></span>
+				<hr class="my-5">
+
+				<!-- form card cc payment -->
+				<div class="card card-outline-secondary">
+					<div class="card-body">
+						<h3 class="text-center">Crypto Payment</h3>
+						<hr>
+						
+						<form class="form" role="form" autocomplete="off" action="/payment" method="POST">
+							<div class="row">
+								<label class="col-md-12">Amount</label>
+							</div>
+							<div class="form-inline">
+								<div class="input-group">
+									<div class="input-group-prepend"><span class="input-group-text">USD</span></div>
+									{{form.amount(type="text", class="form-control text-right", id="exampleInputAmount", placeholder="0.1")}}
+								</div>
+							</div>
+							<div>
+								<option selected>Select Currency</Select></option>
+								{{form.currency(class="form-select")}}
+							</div>
+							<hr>
+							<div class="form-group row">
+								{{form.csrf_token }}
+									<button type="submit" class="btn btn-success btn-lg btn-block">Submit</button>
+							</div>
+						</form>
+					</div>
+				</div>
+				<!-- /form card cc payment -->
+			
+			<p class="copyright" style="text-align:center;padding:40px 0;">Developed by <a href="https://mohamedfakir.live">Mohamed Fakir 2023</a></p>
+
+
+</div>
+
+</body></html>
