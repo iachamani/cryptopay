@@ -2,6 +2,27 @@
 <html>
 	<head>
 		<title>payment details</title>
+		<script>
+      // add the JavaScript code here
+      setInterval(() => {
+        fetch('/status/{{payment.id}}', {
+          method: 'POST',
+          body: JSON.stringify({ /* add any data you want to send in the request body */ }),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          // do something with the response
+        })
+        .catch(error => {
+          console.error('There was a problem with the fetch operation:', error);
+        });
+      }, 10000);
+    </script>
 	</head>
 	<body>
 		<div>{{payment.amount}}</div>
