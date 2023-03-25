@@ -38,7 +38,7 @@ def payment(payment_id):
     payment = Payment.query.filter_by(id=payment_id).first()
     return render_template('payment.html', payment=payment)
 # check the status of the payment
-@app.route('/status/<payment_id>')
+@app.route('/status/<payment_id>',methods=['POST'])
 def status(payment_id):
     response = requests.post(f'http://127.0.0.1:8000/verify/{payment_id}')
     if response.status_code == 200:
@@ -140,6 +140,5 @@ def checkout():
     from forms import PaymentForm
     form = PaymentForm()
     return render_template('checkout.html', form=form)
-    
 
 
