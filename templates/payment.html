@@ -1,7 +1,35 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>payment details</title>
+		<title>Payment Page</title>
+    <style>
+      .card {
+      margin-top: 50px;
+    }
+    
+    .card-title {
+      font-size: 1.5rem;
+    }
+    
+    #bitcoin-address {
+      font-family: monospace;
+    }
+    
+    #copy-btn {
+      border-radius: 0;
+    }
+    
+    #qr-code canvas {
+      margin: 0 auto;
+    }
+    
+    #timer {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #dc3545;
+    }
+    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
 		<script>
       // add the JavaScript code here
       setInterval(() => {
@@ -21,14 +49,35 @@
         .catch(error => {
           console.error('There was a problem with the fetch operation:', error);
         });
-      }, 9000);
+      }, 7000);
     </script>
 	</head>
-	<body>
-		<div>{{payment.amount}}</div>
-		<div>{{payment.currency}}</div>
-		<div>{{payment.address}}</div>
-		<div>{{payment.status}}</div>
-		<div>{{payment.txid}}</div>
-	</body>
+  <body>
+    <div class="container">
+      <h1 class="text-center">Make a Payment</h1>
+      <div class="row justify-content-center">
+        <div class="col-lg-6">
+          <div class="card">
+            <div class="card-body">
+              <h2 class="card-title">Please Send {{payment.amount}}{{payment.currency}} to this Address:</h2>
+              <div class="input-group mb-3">
+                <input id="bitcoin-address" type="text" class="form-control" value="{{payment.address}}" readonly>
+                <button id="copy-btn" class="btn btn-primary">Copy to Clipboard</button>
+              </div>
+              <hr>
+              <div class="text-center">
+                <div id="qr-code">
+                  <img src="/static/QRs/{{payment.address}}.png" alt="QR Code">
+                </div>
+              </div>
+              <hr>
+              <h2 class="card-title">Time Left: (payment status {{payment.status}})</h2>
+              <p id="timer" class="text-center">15:00</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="/static/main.js"></script>
+  </body>
 </html>

@@ -3,6 +3,7 @@ from flask import Flask,jsonify, render_template,url_for,redirect
 from flask_sqlalchemy import SQLAlchemy
 from bit import PrivateKey
 import os
+import qrcode
 
 WALLET = os.environ.get('WALLET')
 
@@ -21,6 +22,7 @@ def create_payment():
         amount = convert(form.amount.data,form.currency.data)
         if form.currency.data == 'BTC':
             address, key = generate_new_btc_address()
+            generate_qr_code(address)
         elif form.currency.data == 'LTC':
             pass
         # Save the payment information in the database
@@ -135,6 +137,9 @@ def convert(amount,currency):
     coin = f'{currency}'
     ltc_rate = data['data']['rates'][coin]
     return amount*float(ltc_rate)
+
+def generate_qr_code(address):
+    qrcode.make(address).save(f'static/QRs/{address}.png')
 
 
 
