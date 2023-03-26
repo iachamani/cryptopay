@@ -2,6 +2,9 @@ import requests
 from flask import Flask,jsonify, render_template,url_for,redirect
 from flask_sqlalchemy import SQLAlchemy
 from bit import PrivateKey
+import os
+
+WALLET = os.environ.get('WALLET')
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///payments.db'
@@ -17,12 +20,12 @@ def create_payment():
     if form.validate_on_submit():
         amount = convert(form.amount.data,form.currency.data)
         if form.currency.data == 'BTC':
-            address = generate_new_btc_address()
+            address, key = generate_new_btc_address()
         elif form.currency.data == 'LTC':
             pass
         # Save the payment information in the database
         from models import Payment
-        db.session.add(Payment(amount,form.currency.data, address,None, 'pending'))
+        db.session.add(Payment(amount,form.currency.data, address,key,None, 'pending'))
         db.session.commit()
         pay = Payment.query.filter_by(address=address).first()
         return redirect(url_for('payment',payment_id=pay.id))
@@ -60,8 +63,7 @@ def handle_webhook(payment_id):
             details.txid = tx_details['txid']
             details.status = 'completed'
             db.session.commit()
-            # Forward the funds to your wallet
-            #forward_funds(details.address, details.amount)
+            forward_btc_funds(details.key,WALLET,details.amount)
             return jsonify({'message': 'Transaction successful'}), 200
     except:
         return jsonify({'message': 'Transaction failed'}), 400
@@ -71,7 +73,7 @@ def generate_new_btc_address():
     # Generate a new Bitcoin testnet address
     key = PrivateKey()
     address = key.address
-    return address
+    return address, key.to_wif()
 
 def verify_btc_transaction(address, amount):
     # Verify the transaction
@@ -90,16 +92,17 @@ def verify_btc_transaction(address, amount):
 
 
 
-def forward_funds(address, amount, coin):
-    # Forward the funds to your wallet
-    # You can use any wallet of your choice
-    # Here we are using the bit library to send the funds to our wallet
-    with open("wallet.txt", "r") as f:
-        wif = f.read().strip()
-    key = PrivateKey(wif)
-    key.get_unspents()
-    tx = key.create_transaction([(address, amount, 'btc')])
-    return tx
+def forward_btc_funds(private_key,wallet, amount):
+    key = PrivateKey(private_key)
+    #send the funds to your wallet and return the transaction hash
+    #estimate the fee
+    fee = key.get_fee()
+    amount = amount - fee
+    txid = key.send([(wallet, amount)])
+    return txid
+
+   
+
 
 def Isconfirmed(address):
     api_url = f'https://blockstream.info/api/address/{address}/txs'
