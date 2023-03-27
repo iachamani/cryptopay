@@ -11,5 +11,5 @@ you can install them with pip install bit
 <h1>Features to be added</h1>
 
 <h2>1 - XMR </h2>
-<h2>1 - ETH </h2>
-<h2>1 - LTC </h2>
+<h2>2 - ETH </h2>
+<h2>3 - LTC </h2>
