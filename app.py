@@ -83,7 +83,7 @@ def verify_btc_transaction(address, amount):
     response = requests.get(api_url)
     tx_details = response.json()[0]
     tx_hash = tx_details['txid']
-    api_url = f'https://blockstream.info/testnet/api/tx/{tx_hash}'
+    api_url = f'https://blockstream.info/api/tx/{tx_hash}'
     response = requests.get(api_url)
     tx_details = response.json()
     for output in tx_details['vout']:
@@ -148,5 +148,17 @@ def checkout():
     from forms import PaymentForm
     form = PaymentForm()
     return render_template('checkout.html', form=form)
+
+
+@app.route('/cleardb', methods=['POST'])
+def cleardb():
+    from models import Payment
+    from datetime import datetime, timedelta
+    one_hour_ago = datetime.now() - timedelta(hours=1)
+    expired_payments = Payment.query.filter_by(status='pending').filter(Payment.created_at < one_hour_ago).all()
+    for payment in expired_payments:
+        db.session.delete(payment)
+    db.session.commit()
+
 
 
